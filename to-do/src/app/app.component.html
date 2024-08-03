@@ -1,0 +1,64 @@
+<h1 class="mainTitle">To do list aplication</h1>
+
+<h3 class="newTask">New Task:</h3>
+
+<section>
+
+  <div class="task">
+    <input type="text" name="Add New Task" placeholder="Add New Task" id="task__input" [(ngModel)]="dataTask">
+    <button class="task__plus" (click)="addNewTask()">
+      <i class="fa-solid fa-plus fa-2x"></i>
+    </button>
+  </div>
+
+  <div class="search" >
+    <input type="text" name="search" placeholder="search..." id="search__task">
+    <i class="fas fa-search"></i>
+  </div>
+
+  <div class="orderBy">
+    <h4 class="orderBy__text">Order By:</h4>
+    <select name="" id="">
+      <option value="">Oldest to Newest</option>
+      <option value="">Newest to Oldest</option>
+    </select>
+  </div>
+  
+</section>
+
+<h3 class="addedItemsText">Added Items:</h3>
+<section class="addedItems">
+
+  <div class="taskItem" [ngStyle]="{'border-top': (i === 0) ? 'solid 1px #D9D9D9' : 'none' }" 
+  *ngFor="let task of arrayTasks; let i = index">
+  
+    <input type="checkbox" id="taskItem__checkbox" [(ngModel)]=" task.checked">
+
+    <p class="taskAdded" *ngIf="!task.edit">{{ task.name }}</p>
+    <input type="text" class="taskItem__edit" *ngIf="task.edit" [(ngModel)]="task.editInput" >
+
+    <button class="taskItem__editButton" (click)="editTask(i)" *ngIf="!task.edit">
+      <i class="fa-solid fa-pencil"></i>
+    </button>
+
+    <button class="taskItem__editingButton" (click)="saveEditTask(i)" *ngIf="task.edit">
+      <i class="fa-solid fa-pencil"></i>
+    </button>
+
+    <button class="taskItem__erraseButton" (click)="deleteTask()">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+  </div>
+</section>
+
+
+<button class="clearCheckedButton" (click)="deleteCheckedTasks()">
+  <i class="fa-solid fa-check"></i>
+  Clear Checked Tasks
+</button>
+
+
+
+
+<router-outlet />
