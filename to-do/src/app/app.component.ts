@@ -3,12 +3,12 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 
-
 interface Task {
   name: string , 
   checked : boolean, 
   edit: boolean,
-  editInput : string 
+  editInput : string,
+  date: Date
 } 
 
 @Component({
@@ -20,51 +20,94 @@ interface Task {
 })
 export class AppComponent {
   title = 'to-do';
+  //data arrays with Task
   arrayTasks:Task[] = [];
+  fiteredTask: Task[] = [];
+
   dataTask : string = '';
+  searchValue: string = '';
   showTask: boolean = true;
   showinputEdit: boolean = false;
   editIndex: number | null = null;
-
+  setOrder:number = 3;
+  itemsRequired: boolean = true;
+  
+  errorMessage:string = '';
+  showError:boolean = false;
 
   ngOnInit(): void{ 
+    this.fiteredTask = this.arrayTasks; 
   }
+
+  orderPriority(order: 'asc' | 'desc'){
+    this.fiteredTask.sort((a, b) => {
+      if(order === 'asc'){
+        return a.date.getTime() - b.date.getTime()
+      }else{
+        return b.date.getTime() - a.date.getTime()
+      }
+    })
+  }
+
 
   addNewTask(){
     if(this.dataTask === ''){
-      alert('write a specific task please')
+      this.errorMessage = 'write a specific task please *';
+      this.showError = true;
     }else{
       const newTask: Task = {
         name: this.dataTask,
         checked: false,
         edit: false,
-        editInput: '' 
+        editInput: '',
+        date: new Date()
       };
-      console.log(this.arrayTasks)
-      const infoTask = this.arrayTasks.push(newTask);
-      console.log(newTask.name);
+      this.itemsRequired = false;
+      this.showError = false;
+      this.arrayTasks.push(newTask);
       this.dataTask = '';
+      this.fiteredTask = [...this.arrayTasks];
+      console.log(newTask.date);
+      console.log(newTask.name);
+      console.log(this.arrayTasks);
+      
     }
   }
 
-  deleteTask(){
-    this.arrayTasks.splice(-1);
+  deleteTask(index : number){
+    this.arrayTasks.splice(index, 1);
+    this.fiteredTask = this.arrayTasks; 
   }
 
   deleteCheckedTasks(){
-    this.arrayTasks = this.arrayTasks.filter(task => !task.checked);
+    this.fiteredTask = this.arrayTasks.filter(task => !task.checked);
+    
   }
 
   editTask(index : number){
     this.arrayTasks[index].edit = true;
     this.arrayTasks[index].editInput = this.arrayTasks[index].name;
-    console.log(this.arrayTasks[index].editInput = this.arrayTasks[index].name);
-    
+    // console.log(this.arrayTasks[index].editInput = this.arrayTasks[index].name);
   }
   
   saveEditTask(index : number){
       this.arrayTasks[index].name = this.arrayTasks[index].editInput;
       this.arrayTasks[index].edit = false;
+  }
+
+  search(){
+  if(this.searchValue === ''){
+    this.fiteredTask = this.arrayTasks;
+  }else{
+    this.fiteredTask = this.arrayTasks.filter(task =>
+      task.name.toLowerCase().includes(this.searchValue.toLowerCase()))
+  }
+  }
+
+  emptySearch(){
+    if(this.searchValue == '' ){
+      this.fiteredTask = this.arrayTasks;
+    }
   }
 
 

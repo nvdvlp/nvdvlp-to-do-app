@@ -1,64 +1,59 @@
-<h1 class="mainTitle">To do list aplication</h1>
+<h1 class="mainTitle">To-Do list</h1>
 
-<h3 class="newTask">New Task:</h3>
+<section class="newTask">
+    <div class="newTask__input">
+      <input id="input" type="text" name="Add New Task" placeholder="Add New Task" [(ngModel)]="dataTask">
+      <button class="input__centerButton" (click)="addNewTask()"><i class="fa-solid fa-plus fa-2x"></i></button>
+    </div>
+    <p class="showError" *ngIf="showError">{{errorMessage}}</p>
 
-<section>
-
-  <div class="task">
-    <input type="text" name="Add New Task" placeholder="Add New Task" id="task__input" [(ngModel)]="dataTask">
-    <button class="task__plus" (click)="addNewTask()">
-      <i class="fa-solid fa-plus fa-2x"></i>
-    </button>
-  </div>
-
-  <div class="search" >
-    <input type="text" name="search" placeholder="search..." id="search__task">
-    <i class="fas fa-search"></i>
-  </div>
-
-  <div class="orderBy">
-    <h4 class="orderBy__text">Order By:</h4>
-    <select name="" id="">
-      <option value="">Oldest to Newest</option>
-      <option value="">Newest to Oldest</option>
-    </select>
-  </div>
-  
+    <div class="newTask__inputSearchTask">
+      <input id="input" type="text" name="Search" placeholder="Search..." [(ngModel)]="searchValue" (ngModelChange)="emptySearch()">
+      <button class="input__centerButton black" (click)="search()"><i class="fas fa-search"></i></button>
+    </div>
 </section>
 
 <h3 class="addedItemsText">Added Items:</h3>
-<section class="addedItems">
 
-  <div class="taskItem" [ngStyle]="{'border-top': (i === 0) ? 'solid 1px #D9D9D9' : 'none' }" 
-  *ngFor="let task of arrayTasks; let i = index">
-  
-    <input type="checkbox" id="taskItem__checkbox" [(ngModel)]=" task.checked">
-
-    <p class="taskAdded" *ngIf="!task.edit">{{ task.name }}</p>
-    <input type="text" class="taskItem__edit" *ngIf="task.edit" [(ngModel)]="task.editInput" >
-
-    <button class="taskItem__editButton" (click)="editTask(i)" *ngIf="!task.edit">
-      <i class="fa-solid fa-pencil"></i>
-    </button>
-
-    <button class="taskItem__editingButton" (click)="saveEditTask(i)" *ngIf="task.edit">
-      <i class="fa-solid fa-pencil"></i>
-    </button>
-
-    <button class="taskItem__erraseButton" (click)="deleteTask()">
-      <i class="fa-solid fa-xmark"></i>
-    </button>
-
+<section class="addedTasks">
+  <div class="addedTask__itemsRequired" *ngIf="itemsRequired">
+    <i class="fa-solid fa-rocket"></i>
+    <h2 class="itemsRequired__addAFewTaskText">add a few tasks</h2>
   </div>
+
+    <div class="addedTasks__taskItem" *ngFor="let task of fiteredTask; let i = index">
+      <input type="checkbox" id="taskItem__checkbox" [(ngModel)]=" task.checked">
+      
+      <p class="taskAdded" *ngIf="!task.edit" >{{ task.name }}</p>
+      <input type="text" class="taskItem__edit" *ngIf="task.edit" [(ngModel)]="task.editInput" >
+  
+      <button class="taskItem__editButton" (click)="editTask(i)" *ngIf="!task.edit">
+        <i class="fa-solid fa-pencil"></i>
+      </button>
+      <button class="taskItem__editingButton" (click)="saveEditTask(i)" *ngIf="task.edit">
+        <i class="fa-solid fa-pencil b"></i>
+      </button>
+
+      <button class="taskItem__deleteButton" (click)="deleteTask(i)">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+</section>
+
+<section class="taskOptions">
+  <div class="taskOptions__orderBy">
+    <select name="orderSelect" id="orderBy__select" [(ngModel)]="setOrder" (ngModelChange)="orderPriority(setOrder === 0 ? 'asc' : 'desc')">
+      <option value="" [ngValue]="3">Order By:</option>
+      <option value="oldest" [ngValue]="0">Oldest to Newest</option>
+      <option value="newest" [ngValue]="1" >Newest to Oldest</option>
+    </select>
+  </div>
+
+  <button class="taskOptions__clearCheckedButton" (click)="deleteCheckedTasks()">
+    clear checked task
+    <i class="fa-solid fa-trash"></i>
+  </button>
 </section>
 
 
-<button class="clearCheckedButton" (click)="deleteCheckedTasks()">
-  <i class="fa-solid fa-check"></i>
-  Clear Checked Tasks
-</button>
 
-
-
-
-<router-outlet />
